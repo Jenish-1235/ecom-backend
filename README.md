@@ -1,224 +1,177 @@
-# E-Commerce Backend API
+# E-Commerce Backend Service
 
-A Spring Boot-based REST API for an e-commerce platform with product management, shopping cart, order processing, and mock payment integration.
+A robust RESTful backend built with Spring Boot that powers core e-commerce workflows such as product catalog management, cart handling, order lifecycle management, and simulated payment processing.
 
-## Tech Stack
+---
 
-- **Framework**: Spring Boot 4.0.1
-- **Database**: MongoDB
-- **Language**: Java 21
-- **Build Tool**: Gradle
+## Technology Stack
 
-## Features
+- **Backend Framework**: Spring Boot 4.0.1  
+- **Programming Language**: Java 21  
+- **Database**: MongoDB  
+- **Build System**: Gradle  
 
-- ✅ Product Management (CRUD + Search)
-- ✅ Shopping Cart Operations
-- ✅ Order Processing with Stock Management
-- ✅ Mock Razorpay Payment Integration
-- ✅ Async Payment Processing with Webhook Callbacks
-- ✅ Order History
-- ✅ Comprehensive Error Handling
+---
 
-## Prerequisites
+## Core Capabilities
 
-- Java 21+
-- MongoDB (running on localhost:27017)
-- Gradle 8+
+- 🛒 Product catalog management with full CRUD and search support  
+- 🧺 Shopping cart operations per user  
+- 📦 Order creation with real-time stock validation  
+- 💳 Simulated Razorpay-style payment flow  
+- 🔄 Asynchronous payment handling using webhook callbacks  
+- 📜 User order history tracking  
+- ❗ Centralized and consistent exception handling  
 
-## Getting Started
+---
 
-### 1. Clone the Repository
+## System Requirements
+
+- Java 21 or higher  
+- MongoDB Atlas account and cluster  
+- Gradle version 8 or above  
+
+---
+
+## Setup & Execution
+
+### Step 1: Clone the Codebase
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Jenish-1235/ecom-backend.git
 cd ecom-backend
 ```
 
-### 2. Configure MongoDB
+---
 
-Ensure MongoDB is running on `localhost:27017`. The default database name is `ecommerce_db`.
+### Step 2: MongoDB Atlas Configuration
 
-You can modify the connection in `src/main/resources/application.yml`:
+The application requires MongoDB Atlas connection details. Create a `.env` file in the root directory based on `env.example`:
 
-```yaml
-spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/ecommerce_db
+```bash
+cp env.example .env
 ```
 
-### 3. Run the Application
+Update the `.env` file with your MongoDB Atlas credentials:
+
+```env
+MONGODB_USERNAME=your_atlas_username
+MONGODB_PASSWORD=your_atlas_password
+MONGODB_CLUSTER=your_cluster.mongodb.net
+MONGODB_DATABASE=ecommerce_db
+```
+
+**Note:** This application uses MongoDB Atlas exclusively. Ensure you have a MongoDB Atlas account and cluster set up before running the application.
+
+---
+
+### Step 3: Run the Application
 
 ```bash
 ./gradlew bootRun
 ```
 
-The server will start on `http://localhost:8080`
+Server runs at: `http://localhost:8080`
 
-### 4. Build the Project
+---
+
+### Step 4: Build the Project
 
 ```bash
 ./gradlew build
 ```
 
-## API Documentation
+---
 
-### Products
+## API Overview
+
+### Product APIs
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+|------|---------|-------------|
 | POST | `/api/products` | Create a new product |
-| GET | `/api/products` | Get all products |
+| GET | `/api/products` | Retrieve all products |
 | GET | `/api/products/{id}` | Get product by ID |
-| GET | `/api/products/search?q={query}` | Search products by name |
+| GET | `/api/products/search?q={query}` | Search products |
 
-### Cart
+---
+
+### Cart APIs
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+|------|---------|-------------|
 | POST | `/api/cart/add` | Add item to cart |
-| GET | `/api/cart/{userId}` | Get user's cart |
-| DELETE | `/api/cart/{userId}/clear` | Clear user's cart |
-| DELETE | `/api/cart/{userId}/item/{productId}` | Remove item from cart |
+| GET | `/api/cart/{userId}` | Fetch user cart |
+| DELETE | `/api/cart/{userId}/clear` | Clear cart |
+| DELETE | `/api/cart/{userId}/item/{productId}` | Remove item |
 
-### Orders
+---
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/orders` | Create order from cart |
-| GET | `/api/orders/{orderId}` | Get order by ID |
-| GET | `/api/orders/user/{userId}` | Get user's order history |
-| POST | `/api/orders/{orderId}/cancel` | Cancel an unpaid order |
-
-### Payments
+### Order APIs
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/payments/create` | Initiate payment for order |
-| GET | `/api/payments/{paymentId}` | Get payment by ID |
-| GET | `/api/payments/order/{orderId}` | Get payment by order ID |
+|------|---------|-------------|
+| POST | `/api/orders` | Create order |
+| GET | `/api/orders/{orderId}` | Get order details |
+| GET | `/api/orders/user/{userId}` | Order history |
+| POST | `/api/orders/{orderId}/cancel` | Cancel unpaid order |
 
-### Webhooks
+---
+
+### Payment APIs
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/webhooks/payment` | Payment callback (internal) |
+|------|---------|-------------|
+| POST | `/api/payments/create` | Initiate payment |
+| GET | `/api/payments/{paymentId}` | Get payment |
+| GET | `/api/payments/order/{orderId}` | Payment by order |
 
-## Sample Requests
+---
 
-### Create a Product
+### Webhook
 
-```bash
-curl -X POST http://localhost:8080/api/products \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Laptop",
-    "description": "High-performance laptop",
-    "price": 999.99,
-    "stock": 50
-  }'
-```
+| Method | Endpoint | Description |
+|------|---------|-------------|
+| POST | `/api/webhooks/payment` | Payment callback |
 
-### Add to Cart
-
-```bash
-curl -X POST http://localhost:8080/api/cart/add \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "user123",
-    "productId": "<product-id>",
-    "quantity": 2
-  }'
-```
-
-### Create Order
-
-```bash
-curl -X POST http://localhost:8080/api/orders \
-  -H "Content-Type: application/json" \
-  -d '{
-    "userId": "user123"
-  }'
-```
-
-### Initiate Payment
-
-```bash
-curl -X POST http://localhost:8080/api/payments/create \
-  -H "Content-Type: application/json" \
-  -d '{
-    "orderId": "<order-id>"
-  }'
-```
+---
 
 ## Payment Flow
 
-1. **Create Order**: User creates an order from their cart
-2. **Initiate Payment**: Call `/api/payments/create` with the order ID
-3. **Async Processing**: Mock payment gateway processes payment (3-second delay)
-4. **Webhook Callback**: Gateway calls `/api/webhooks/payment` with result
-5. **Status Update**: Payment and order status are updated accordingly
+1. Order is created from cart  
+2. Payment is initiated  
+3. Mock gateway processes payment  
+4. Webhook updates status  
+5. Order state updated  
 
-### Payment Status Flow
+---
 
-```
-PENDING → SUCCESS (Order: PAID)
-        → FAILED (Order: FAILED)
-```
+## Order States
 
-## Order Status
-
-| Status | Description |
-|--------|-------------|
-| CREATED | Order created, awaiting payment |
+| State | Description |
+|------|-------------|
+| CREATED | Awaiting payment |
 | PAID | Payment successful |
 | FAILED | Payment failed |
 | CANCELLED | Order cancelled |
 
-## Mock Payment Configuration
-
-Configure in `application.yml`:
-
-```yaml
-mock:
-  payment:
-    delay-ms: 3000      # Processing delay in milliseconds
-    success-rate: 0.8   # 80% success rate
-```
+---
 
 ## Project Structure
 
 ```
 src/main/java/com/jenish/ecombackend/
-├── config/              # Configuration classes
-├── controller/          # REST controllers
+├── config/
+├── controller/
 ├── dto/
-│   ├── request/         # Request DTOs
-│   └── response/        # Response DTOs
-├── exception/           # Custom exceptions & handlers
+│   ├── request/
+│   └── response/
+├── exception/
 ├── model/
-│   └── enums/           # Status enums
-├── repository/          # MongoDB repositories
+│   └── enums/
+├── repository/
 └── service/
-    └── impl/            # Service implementations
+    └── impl/
 ```
 
-## Error Handling
-
-All errors return a consistent JSON structure:
-
-```json
-{
-  "status": 400,
-  "error": "Bad Request",
-  "message": "Descriptive error message",
-  "path": "/api/endpoint",
-  "timestamp": "2026-01-19T10:30:00Z",
-  "fieldErrors": []
-}
-```
-
-## License
-
-This project is for educational purposes.
-
+---
