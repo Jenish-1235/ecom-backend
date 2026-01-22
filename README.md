@@ -44,13 +44,15 @@ cd ecom-backend
 
 ---
 
-### Step 2: MongoDB Atlas Configuration
+### Step 2: MongoDB Configuration
 
-The application requires MongoDB Atlas connection details. Create a `.env` file in the root directory based on `env.example`:
+The application supports both MongoDB Atlas (cloud) and local MongoDB instances. Create a `.env` file in the root directory based on `env.example`:
 
 ```bash
 cp env.example .env
 ```
+
+#### Option A: MongoDB Atlas (Recommended for Production)
 
 Update the `.env` file with your MongoDB Atlas credentials:
 
@@ -61,7 +63,30 @@ MONGODB_CLUSTER=your_cluster.mongodb.net
 MONGODB_DATABASE=ecommerce_db
 ```
 
-**Note:** This application uses MongoDB Atlas exclusively. Ensure you have a MongoDB Atlas account and cluster set up before running the application.
+**Note:** This application uses MongoDB Atlas by default. Ensure you have a MongoDB Atlas account and cluster set up before running the application.
+
+#### Option B: Local MongoDB (Fallback for Development)
+
+For local development, you can use a local MongoDB instance as a fallback. 
+
+**Note:** The current configuration enforces Atlas connections. To use local MongoDB, you need to modify `MongoConfig.java` to allow localhost connections, or set the MongoDB URI directly in `application.yml`:
+
+```yaml
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ecommerce_db
+      database: ecommerce_db
+```
+
+**Prerequisites for Local MongoDB:**
+- Install MongoDB locally: [MongoDB Installation Guide](https://www.mongodb.com/docs/manual/installation/)
+- Start MongoDB service: 
+  - Linux: `sudo systemctl start mongod` or `mongod`
+  - macOS: `brew services start mongodb-community`
+  - Windows: Start MongoDB service from Services
+- Ensure MongoDB is running on `localhost:27017`
+- Default local connection: `mongodb://localhost:27017/ecommerce_db`
 
 ---
 
